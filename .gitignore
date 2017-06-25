@@ -1,0 +1,13 @@
+# Ignore generated folders
+node_modules/
+dist/
+coverage/
+build/
+
+# Ignore OS Specific files
+.DS_Store
+
+# Ignore error logs
+npm-debug.log
+selenium-debug.log
+yarn-error.log

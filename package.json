@@ -1,0 +1,20 @@
+{
+  "name": "graphql-quick-type",
+  "version": "0.1.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "test": "jest"
+  },
+  "devDependencies": {
+    "jest": "^20.0.4"
+  },
+  "dependencies": {
+    "babel-core": "^6.25.0",
+    "babel-generator": "^6.25.0",
+    "babel-plugin-transform-strict-mode": "^6.24.1",
+    "babel-types": "^6.25.0",
+    "fbjs": "^0.8.12",
+    "prettier": "^1.4.4"
+  }
+}
