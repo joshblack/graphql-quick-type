@@ -12,6 +12,7 @@ function print(inputAST) {
   return prettier.format(code, {
     trailingComma: 'all',
     singleQuote: true,
+    bracketSpacing: false,
   });
 }
 
