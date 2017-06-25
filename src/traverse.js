@@ -2,6 +2,7 @@
 
 const {types: t} = require('./types');
 
+// Traverse through each field in our overall Object Type
 module.exports = () => {
   let _id = 0;
   return function traverse(tree, parentId) {

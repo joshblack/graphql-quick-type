@@ -3,7 +3,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const TEST_FIXTURES_DIR = path.resolve(__dirname, '../__testfixtures__');
+const TEST_FIXTURES_DIR = path.resolve(__dirname, '../../__testfixtures__');
 const files = fs.readdirSync(TEST_FIXTURES_DIR);
 const pairedFiles = files.reduce((acc, file) => {
   const [prefix] = file.split('.');

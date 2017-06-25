@@ -12,7 +12,7 @@ const generatedType1 = new GraphQLObjectType({
 });
 module.exports = generatedType1;
 
-('use strict');
+'use strict';
 
 const {GraphQLString, GraphQLObjectType} = require('graphql');
 
