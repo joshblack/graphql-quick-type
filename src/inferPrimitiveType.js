@@ -1,6 +1,6 @@
 'use strict';
 
-const { types: t } = require('./types');
+const {types: t} = require('./types');
 
 function inferPrimitiveType(input) {
   if (typeof input === 'string') {

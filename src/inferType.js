@@ -1,6 +1,6 @@
 'use strict';
 
-const { types: t } = require('./types');
+const {types: t} = require('./types');
 const inferPrimitiveType = require('./inferPrimitiveType');
 
 function inferType(input) {
@@ -14,16 +14,11 @@ function inferType(input) {
   if (inferPrimitiveType(input) === t.GraphQLObjectType) {
     return {
       type: t.GraphQLObjectType,
-      fields: Object.keys(input).map((key) => {
+      fields: Object.keys(input).map(key => {
         return Object.assign({}, inferType(input[key]), {
           name: key.toLowerCase(),
         });
       }),
-      // fields: Object.keys(input).reduce((acc, key) => {
-        // return Object.assign({}, acc, {
-          // [key.toLowerCase()]: inferType(input[key]),
-        // });
-      // }, {}),
     };
   }
 

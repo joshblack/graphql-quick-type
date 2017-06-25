@@ -4,10 +4,16 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "test": "jest"
+    "commitmsg": "validate-commit-msg",
+    "test": "jest",
+    "prettier": "prettier --write --no-bracket-spacing --single-quote --jsx-bracket-same-line --trailing-comma all --print-width 80 \"src/**/*.js\"",
+    "precommit": "lint-staged"
   },
   "devDependencies": {
-    "jest": "^20.0.4"
+    "husky": "^0.14.1",
+    "jest": "^20.0.4",
+    "lint-staged": "^4.0.0",
+    "validate-commit-msg": "^2.12.2"
   },
   "dependencies": {
     "babel-core": "^6.25.0",
@@ -16,5 +22,16 @@
     "babel-types": "^6.25.0",
     "fbjs": "^0.8.12",
     "prettier": "^1.4.4"
+  },
+  "config": {
+    "validate-commit-msg": {
+      "helpMessage": "\nNeed help? We're currently using a commit convention that is outlined here:\nhttps://github.com/conventional-changelog/conventional-changelog/blob/v0.5.3/conventions/angular.md\n\nWe use this convention in order to make contributions to the project clear and predictable.\n\nCurrently, we support the following types: feat, fix, docs, style, refactor, perf, test, chore, revert.\n\nYou can use these types in your commit message in the following fashion:\n\n$ git commit -m \"<type>(<scope>): some commit message here\""
+    }
+  },
+  "lint-staged": {
+    "src/**/*.js": [
+      "prettier",
+      "git add"
+    ]
   }
 }

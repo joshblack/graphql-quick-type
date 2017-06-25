@@ -14,7 +14,7 @@ const pairedFiles = files.reduce((acc, file) => {
   }
 
   return Object.assign({}, acc, {
-    [prefix]: [`${TEST_FIXTURES_DIR}/${file}`]
+    [prefix]: [`${TEST_FIXTURES_DIR}/${file}`],
   });
 }, {});
 
@@ -22,7 +22,7 @@ describe('quickTypes', () => {
   let quickTypes;
 
   it('should work', () => {
-    Object.keys(pairedFiles).forEach((key) => {
+    Object.keys(pairedFiles).forEach(key => {
       const pair = pairedFiles[key];
       const input = fs.readFileSync(pair[0], 'utf8');
       const output = fs.readFileSync(pair[1], 'utf8');
@@ -30,15 +30,15 @@ describe('quickTypes', () => {
       quickTypes = require('../');
 
       // quickTypes({
-        // id: 1,
-        // name: 'Jane Doe',
-        // // friends: [
-          // // {
-            // // id: '2',
-            // // name: 'John Doe',
-            // // friends: [],
-          // // },
-        // // ],
+      // id: 1,
+      // name: 'Jane Doe',
+      // // friends: [
+      // // {
+      // // id: '2',
+      // // name: 'John Doe',
+      // // friends: [],
+      // // },
+      // // ],
       // })
       expect(quickTypes(JSON.parse(input))).toBe(output);
     });

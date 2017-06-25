@@ -34,10 +34,7 @@ describe('inferType', () => {
   });
 
   it('should infer the types in an array', () => {
-    const array = [
-      { foo: 'bar' },
-      { foo: 'baz' },
-    ];
+    const array = [{foo: 'bar'}, {foo: 'baz'}];
     expect(inferType(array)).toEqual({
       type: 'GraphQLList',
       children: [
@@ -65,9 +62,7 @@ describe('inferType', () => {
 
   it('should infer the types in a object with an array field', () => {
     const object = {
-      a: [
-        { b: 'b' },
-      ],
+      a: [{b: 'b'}],
     };
     expect(inferType(object)).toEqual({
       type: 'GraphQLObjectType',
@@ -81,7 +76,7 @@ describe('inferType', () => {
               fields: [
                 {
                   name: 'b',
-                  type: 'GraphQLString'
+                  type: 'GraphQLString',
                 },
               ],
             },

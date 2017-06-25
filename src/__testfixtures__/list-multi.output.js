@@ -1,6 +1,6 @@
 'use strict';
 
-const { GraphQLString, GraphQLObjectType } = require('graphql');
+const {GraphQLString, GraphQLObjectType} = require('graphql');
 
 const generatedType1 = new GraphQLObjectType({
   name: 'GeneratedType1',
@@ -12,9 +12,9 @@ const generatedType1 = new GraphQLObjectType({
 });
 module.exports = generatedType1;
 
-'use strict';
+('use strict');
 
-const { GraphQLString, GraphQLObjectType } = require('graphql');
+const {GraphQLString, GraphQLObjectType} = require('graphql');
 
 const generatedType3 = new GraphQLObjectType({
   name: 'GeneratedType3',

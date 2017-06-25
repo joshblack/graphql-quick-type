@@ -1,6 +1,6 @@
 'use strict';
 
-const { types: t } = require('./types');
+const {types: t} = require('./types');
 
 module.exports = () => {
   let _id = 0;
@@ -16,17 +16,17 @@ module.exports = () => {
     visited.push(node);
 
     if (tree.type === t.GraphQLObjectType) {
-      tree.fields.forEach((field) => {
+      tree.fields.forEach(field => {
         visited.push(...traverse(field, id));
       });
     }
 
     if (tree.type === t.GraphQLList) {
-      tree.children.forEach((child) => {
+      tree.children.forEach(child => {
         visited.push(...traverse(child, id));
       });
     }
 
     return visited;
-  }
+  };
 };

@@ -1,6 +1,6 @@
 'use strict';
 
-const { GraphQLString, GraphQLObjectType } = require('graphql');
+const {GraphQLString, GraphQLObjectType} = require('graphql');
 
 const generatedType1 = new GraphQLObjectType({
   name: 'GeneratedType1',
