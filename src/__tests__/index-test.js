@@ -32,13 +32,16 @@ describe('quickTypes', () => {
       // quickTypes({
       // id: 1,
       // name: 'Jane Doe',
-      // // friends: [
-      // // {
-      // // id: '2',
-      // // name: 'John Doe',
-      // // friends: [],
-      // // },
-      // // ],
+      // info: {
+      // verified: true,
+      // },
+      // friends: [
+      // {
+      // id: '2',
+      // name: 'John Doe',
+      // friends: [],
+      // },
+      // ],
       // })
       expect(quickTypes(JSON.parse(input))).toBe(output);
     });

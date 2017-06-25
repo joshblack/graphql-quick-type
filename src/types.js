@@ -8,5 +8,14 @@ const types = {
   GraphQLList: 'GraphQLList',
   GraphQLObjectType: 'GraphQLObjectType',
 };
+const primitiveType = new Set([
+  types.GraphQLBoolean,
+  types.GraphQLString,
+  types.GraphQLInt,
+  types.GraphQLFloat,
+]);
 
 exports.types = types;
+exports.isPrimitiveType = function isPrimitiveType(type) {
+  return primitiveType.has(type);
+};

@@ -1,11 +1,11 @@
 'use strict';
 
 const {
+  GraphQLObjectType,
   GraphQLString,
   GraphQLInt,
   GraphQLFloat,
   GraphQLBoolean,
-  GraphQLObjectType,
 } = require('graphql');
 
 const generatedType0 = new GraphQLObjectType({
