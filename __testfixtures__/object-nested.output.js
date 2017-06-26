@@ -22,7 +22,7 @@ module.exports = generatedType0;
 
 'use strict';
 
-const {GraphQLObjectType, GraphQLBoolean} = require('graphql');
+const {GraphQLBoolean, GraphQLObjectType} = require('graphql');
 
 const generatedType3 = new GraphQLObjectType({
   name: 'GeneratedType3',

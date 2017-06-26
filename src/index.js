@@ -6,9 +6,10 @@ const print = require('./print');
 
 function quickTypes(input) {
   const modules = buildModuleGraph(input);
-  const files = modules.map(convertToAST).map(print);
+  // console.log(modules);
+  // const files = modules.map(convertToAST).map(print);
 
-  return files.join('\n');
+  // return files.join('\n');
 }
 
 module.exports = quickTypes;

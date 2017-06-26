@@ -29,21 +29,18 @@ describe('quickTypes', () => {
 
       quickTypes = require('../');
 
-      // quickTypes({
-      // id: 1,
-      // name: 'Jane Doe',
-      // info: {
-      // verified: true,
-      // },
-      // friends: [
-      // {
-      // id: '2',
-      // name: 'John Doe',
-      // friends: [],
-      // },
-      // ],
-      // })
       expect(quickTypes(JSON.parse(input))).toBe(output);
     });
+  });
+
+  fit('specific file', () => {
+    const pair = pairedFiles['object-nested'];
+    const input = fs.readFileSync(pair[0], 'utf8');
+    const output = fs.readFileSync(pair[1], 'utf8');
+
+    quickTypes = require('../');
+
+    quickTypes(JSON.parse(input));
+    // expect(quickTypes(JSON.parse(input))).toBe(output);
   });
 });

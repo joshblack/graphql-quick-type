@@ -7,6 +7,7 @@ const types = {
   GraphQLFloat: 'GraphQLFloat',
   GraphQLList: 'GraphQLList',
   GraphQLObjectType: 'GraphQLObjectType',
+  GraphQLUnionType: 'GraphQLUnionType',
 };
 const primitiveType = new Set([
   types.GraphQLBoolean,

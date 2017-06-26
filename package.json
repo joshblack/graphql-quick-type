@@ -13,6 +13,7 @@
     "husky": "^0.14.1",
     "jest": "^20.0.4",
     "lint-staged": "^4.0.0",
+    "pretty-format": "^20.0.3",
     "validate-commit-msg": "^2.12.2"
   },
   "dependencies": {

@@ -1,6 +1,7 @@
 'use strict';
 
 const t = require('babel-types');
+const {types: gt} = require('./types');
 const generate = require('babel-generator').default;
 
 const capitalizeWord = word => {
@@ -8,14 +9,18 @@ const capitalizeWord = word => {
 };
 
 const createGraphQLImportStatement = imports => {
-  const importObjectPattern = imports.map(({name}) => {
-    return t.objectProperty(
-      t.identifier(name),
-      t.identifier(name),
-      false,
-      true,
-    );
-  });
+  const importObjectPattern = imports
+    .sort((a, b) => {
+      return b.name < a.name;
+    })
+    .map(({name}) => {
+      return t.objectProperty(
+        t.identifier(name),
+        t.identifier(name),
+        false,
+        true,
+      );
+    });
   return t.variableDeclaration('const', [
     t.variableDeclarator(
       t.objectPattern(importObjectPattern),
@@ -53,6 +58,20 @@ function convertToAST(object) {
         t.identifier(field.exports.default.name),
         t.objectExpression([
           t.objectProperty(t.identifier('type'), t.identifier(field.name)),
+        ]),
+      );
+    }
+
+    if (field.type === gt.GraphQLList) {
+      return t.objectProperty(
+        t.identifier(field.name),
+        t.objectExpression([
+          t.objectProperty(
+            t.identifier('type'),
+            t.newExpression(t.identifier(gt.GraphQLList), [
+              t.identifier(field.info.listType.type),
+            ]),
+          ),
         ]),
       );
     }
@@ -96,68 +115,6 @@ function convertToAST(object) {
   return t.file(
     t.program([...importStatements, typeDefinition, exportStatement]),
   );
-
-  // const {id, tree, imports} = object;
-  // const name = `generatedType${id}`;
-  // const importObjectPattern = imports.map(namedImport => {
-  // return t.objectProperty(
-  // t.identifier(namedImport),
-  // t.identifier(namedImport),
-  // false,
-  // true,
-  // );
-  // });
-  // const importStatements = t.variableDeclaration('const', [
-  // t.variableDeclarator(
-  // t.objectPattern(importObjectPattern),
-  // t.callExpression(t.identifier('require'), [t.stringLiteral('graphql')]),
-  // ),
-  // ]);
-  // const fields = tree.fields.map(field => {
-  // return t.objectProperty(
-  // t.identifier(field.name),
-  // t.objectExpression([
-  // t.objectProperty(t.identifier('type'), t.identifier(field.type)),
-  // ]),
-  // );
-  // });
-
-  // const typeDefinition = t.variableDeclaration('const', [
-  // t.variableDeclarator(
-  // t.identifier(name),
-  // t.newExpression(t.identifier('GraphQLObjectType'), [
-  // t.objectExpression([
-  // t.objectProperty(
-  // t.identifier('name'),
-  // t.stringLiteral(capitalizeWord(name)),
-  // false,
-  // false,
-  // ),
-  // t.objectProperty(
-  // t.identifier('fields'),
-  // t.arrowFunctionExpression([], t.objectExpression(fields)),
-  // ),
-  // ]),
-  // ]),
-  // ),
-  // ]);
-
-  // const exportStatement = t.expressionStatement(
-  // t.assignmentExpression(
-  // '=',
-  // t.memberExpression(t.identifier('module'), t.identifier('exports')),
-  // t.identifier(name),
-  // ),
-  // );
-
-  // const program = t.program([
-  // importStatements,
-  // typeDefinition,
-  // exportStatement,
-  // ]);
-  // const file = t.file(program);
-
-  // return file;
 }
 
 module.exports = convertToAST;
