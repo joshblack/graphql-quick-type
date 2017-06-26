@@ -2,7 +2,7 @@
 
 const {GraphQLList, GraphQLObjectType, GraphQLString} = require('graphql');
 
-const generatedType3 = require('./generatedType3');
+const generatedType1 = require('./generatedType1');
 
 const generatedType0 = new GraphQLObjectType({
   name: 'GeneratedType0',
@@ -11,27 +11,37 @@ const generatedType0 = new GraphQLObjectType({
       type: GraphQLString,
     },
     list: {
-      type: new GraphQLList(generatedType3),
+      type: new GraphQLList(generatedType1),
     },
   }),
 });
 module.exports = generatedType0;
 
-const {GraphQLBoolean, GraphQLInt, GraphQLString} = require('graphql');
+'use strict';
 
-const generatedType3 = new GraphQLUnionType({
-  name: 'GeneratedType3',
-  types: [GraphQLBoolean, GraphQLInt, GraphQLString],
+const {
+  GraphQLBoolean,
+  GraphQLInt,
+  GraphQLString,
+  GraphQLUnionType,
+} = require('graphql');
+
+const generatedType1 = new GraphQLUnionType({
+  name: 'GeneratedType1',
+  types: [GraphQLInt, GraphQLString, GraphQLBoolean],
+
   resolveType(value) {
-    if (value instanceof GraphQLBoolean) {
-      return GraphQLBoolean;
-    }
     if (value instanceof GraphQLInt) {
       return GraphQLInt;
     }
+
     if (value instanceof GraphQLString) {
       return GraphQLString;
     }
+
+    if (value instanceof GraphQLBoolean) {
+      return GraphQLBoolean;
+    }
   },
 });
-module.exports = generatedType3;
+module.exports = generatedType1;

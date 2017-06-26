@@ -7,16 +7,6 @@ const inferType = require('./inferType');
 const {types: t, isPrimitiveType} = require('./types');
 const prettyFormat = require('pretty-format');
 
-// {
-// id: 0,
-// name: string,
-// // Directed Edges, essentially. These are dependencies.
-// // So this module, A, depends on imports B, C. Visually: A -> B,C
-// imports: [],
-// // The tree that will be constructed
-// exports: {},
-// }
-
 const normalizeModule = m => {
   const imports = m.tree.fields
     .filter(field => {
@@ -77,12 +67,22 @@ const addImport = (imports, module) => {
   return [...imports, module];
 };
 
+const createModule = ({id, parent, imports, exports}) => ({
+  id,
+  // parent,
+  imports,
+  exports,
+  info: {
+    name: `generatedType${id}`,
+  },
+});
+
 function buildModuleGraph(input) {
   const root = inferType(input);
   const moduleMap = {};
   const nodeMap = new WeakMap();
   let _id = 0;
-  let parentNode = null;
+  let parentNode;
 
   traverse(root, {
     [t.GraphQLObjectType](node, context) {
@@ -106,21 +106,29 @@ function buildModuleGraph(input) {
         source: 'graphql',
       });
 
-      moduleMap[id] = {
+      moduleMap[id] = createModule({
         id,
-        parent: parentNode,
+        // parent: parentNode,
         imports,
         exports: {
           default: node,
         },
-      };
+      });
 
       nodeMap.set(node, moduleMap[id]);
 
       const parentModule = nodeMap.get(parentNode);
 
       if (parentModule) {
+        const [field] = parentNode.fields
+          .map((field, i) => ({field, index: i}))
+          .filter(({field}) => areEqual(node, field));
+
         parentModule.imports = addImport(parentModule.imports, moduleMap[id]);
+
+        parentNode.fields[field.index] = Object.assign({}, field.field, {
+          type: moduleMap[id].info.name,
+        });
       }
 
       if (!areEqual(parentNode, context)) {
@@ -128,6 +136,10 @@ function buildModuleGraph(input) {
       }
     },
     [t.GraphQLList](node, context) {
+      if (parentNode === undefined) {
+        return;
+      }
+
       const {children} = node;
       const types = new Set(children.map(({type}) => type));
       const [field] = parentNode.fields
@@ -152,16 +164,20 @@ function buildModuleGraph(input) {
 
       // Union Type
       const id = _id++;
-      moduleMap[id] = {
+      moduleMap[id] = createModule({
         id,
-        parent: parentNode,
+        // parent: parentNode,
+        imports: [...types, 'GraphQLUnionType'].map(name => ({
+          name,
+          source: 'graphql',
+        })),
         exports: {
           default: {
             type: t.GraphQLUnionType,
             types: [...types],
           },
         },
-      };
+      });
 
       nodeMap.set(node, moduleMap[id]);
 
@@ -183,79 +199,7 @@ function buildModuleGraph(input) {
     },
   });
 
-  // console.log(prettyFormat(moduleMap));
-
-  console.log(moduleMap[0].imports);
-
-  // const modules = traverse()(type)
-  // .filter(({tree}) => tree.type === t.GraphQLObjectType)
-  // .reduce((acc, m) => {
-  // return Object.assign({}, acc, {
-  // [m.id]: normalizeModule(m),
-  // });
-  // }, {});
-
-  // Object.keys(modules).forEach(id => {
-  // const m = modules[id];
-  // const parentModule = modules[m.parentId];
-
-  // delete modules[id].parentId;
-
-  // // We're at the root of the tree, nothing that we can do here so we'll
-  // // just normalize the structure.
-  // if (parentModule === undefined) {
-  // return;
-  // }
-
-  // // Look through the parent module for nested types that are equivalent
-  // // to the current module we're working with.
-  // const fields = parentModule.exports.default.fields
-  // .map((field, i) => ({field, index: i}))
-  // .filter(({field}) => areEqual(field, m.exports.default));
-
-  // fields.forEach(({field, index}) => {
-  // parentModule.exports.default.fields[index] = m;
-
-  // if (parentModule.imports.indexOf(m.id) === -1) {
-  // parentModule.imports.push(m);
-  // }
-  // });
-  // });
-
-  // return Object.keys(modules).map(id => modules[id]).map((m) => {
-  // const listFields = m.exports.default.fields.filter((field) => {
-  // return field.type === t.GraphQLList;
-  // });
-
-  // if (listFields.length) {
-  // console.log(m);
-  // }
-
-  // listFields.forEach((listField) => {
-  // const homogeneous = listField.children.reduce((acc, field, i, arr) => {
-  // if (!acc) {
-  // return acc;
-  // }
-  // return areEqual(field, arr[i - 1]);
-  // });
-
-  // listField.info = {
-  // homogeneous,
-  // listType: listField.children[0],
-  // };
-  // });
-
-  // if (listFields.length) {
-  // if (!m.imports.find(({ name }) => name === t.GraphQLList)) {
-  // m.imports.push({
-  // name: t.GraphQLList,
-  // source: 'graphql',
-  // });
-  // }
-  // }
-
-  // return m;
-  // });
+  return Object.keys(moduleMap).map(key => moduleMap[key]);
 }
 
 module.exports = buildModuleGraph;

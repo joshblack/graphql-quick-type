@@ -2,12 +2,12 @@
 
 const {GraphQLObjectType, GraphQLString} = require('graphql');
 
-const generatedType1 = new GraphQLObjectType({
-  name: 'GeneratedType1',
+const generatedType0 = new GraphQLObjectType({
+  name: 'GeneratedType0',
   fields: () => ({
     id: {
       type: GraphQLString,
     },
   }),
 });
-module.exports = generatedType1;
+module.exports = generatedType0;

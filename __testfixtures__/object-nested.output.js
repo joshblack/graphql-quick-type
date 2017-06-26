@@ -2,7 +2,7 @@
 
 const {GraphQLObjectType, GraphQLString} = require('graphql');
 
-const generatedType3 = require('./generatedType3');
+const generatedType1 = require('./generatedType1');
 
 const generatedType0 = new GraphQLObjectType({
   name: 'GeneratedType0',
@@ -14,7 +14,7 @@ const generatedType0 = new GraphQLObjectType({
       type: GraphQLString,
     },
     info: {
-      type: generatedType3,
+      type: generatedType1,
     },
   }),
 });
@@ -24,12 +24,12 @@ module.exports = generatedType0;
 
 const {GraphQLBoolean, GraphQLObjectType} = require('graphql');
 
-const generatedType3 = new GraphQLObjectType({
-  name: 'GeneratedType3',
+const generatedType1 = new GraphQLObjectType({
+  name: 'GeneratedType1',
   fields: () => ({
     verified: {
       type: GraphQLBoolean,
     },
   }),
 });
-module.exports = generatedType3;
+module.exports = generatedType1;

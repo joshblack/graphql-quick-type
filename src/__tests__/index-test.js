@@ -21,26 +21,25 @@ const pairedFiles = files.reduce((acc, file) => {
 describe('quickTypes', () => {
   let quickTypes;
 
-  it('should work', () => {
-    Object.keys(pairedFiles).forEach(key => {
-      const pair = pairedFiles[key];
-      const input = fs.readFileSync(pair[0], 'utf8');
-      const output = fs.readFileSync(pair[1], 'utf8');
-
-      quickTypes = require('../');
-
-      expect(quickTypes(JSON.parse(input))).toBe(output);
-    });
-  });
-
-  fit('specific file', () => {
-    const pair = pairedFiles['object-nested'];
+  Object.keys(pairedFiles).forEach(key => {
+    const pair = pairedFiles[key];
     const input = fs.readFileSync(pair[0], 'utf8');
     const output = fs.readFileSync(pair[1], 'utf8');
 
     quickTypes = require('../');
 
-    quickTypes(JSON.parse(input));
-    // expect(quickTypes(JSON.parse(input))).toBe(output);
+    it(`should convert ${path.basename(pair[0])}`, () => {
+      expect(quickTypes(JSON.parse(input))).toBe(output);
+    });
   });
+
+  // fit('specific file', () => {
+  // const pair = pairedFiles['object-array-simple2'];
+  // const input = fs.readFileSync(pair[0], 'utf8');
+  // const output = fs.readFileSync(pair[1], 'utf8');
+
+  // quickTypes = require('../');
+
+  // quickTypes(JSON.parse(input));
+  // });
 });

@@ -32,9 +32,9 @@ const createGraphQLImportStatement = imports => {
 const createCustomImportStatement = m => {
   return t.variableDeclaration('const', [
     t.variableDeclarator(
-      t.identifier(m.name),
+      t.identifier(m.info.name),
       t.callExpression(t.identifier('require'), [
-        t.stringLiteral(`./${m.name}`),
+        t.stringLiteral(`./${m.info.name}`),
       ]),
     ),
   ]);
@@ -49,9 +49,16 @@ const createImportStatements = imports => {
   return [createGraphQLImportStatement(graphQLImports), ...customImports];
 };
 
-function convertToAST(object) {
-  const {id, name, exports, imports} = object;
-  const importStatements = createImportStatements(imports);
+const getListTypeFor = field => {
+  if (typeof field.ofType === 'string') {
+    return field.ofType;
+  }
+
+  return field.ofType.info.name;
+};
+
+const createGraphQLObjectType = object => {
+  const {info: {name}, exports} = object;
   const fields = exports.default.fields.map(field => {
     if (field.id) {
       return t.objectProperty(
@@ -69,7 +76,7 @@ function convertToAST(object) {
           t.objectProperty(
             t.identifier('type'),
             t.newExpression(t.identifier(gt.GraphQLList), [
-              t.identifier(field.info.listType.type),
+              t.identifier(getListTypeFor(field)),
             ]),
           ),
         ]),
@@ -87,7 +94,7 @@ function convertToAST(object) {
   const typeDefinition = t.variableDeclaration('const', [
     t.variableDeclarator(
       t.identifier(name),
-      t.newExpression(t.identifier('GraphQLObjectType'), [
+      t.newExpression(t.identifier(gt.GraphQLObjectType), [
         t.objectExpression([
           t.objectProperty(
             t.identifier('name'),
@@ -103,6 +110,65 @@ function convertToAST(object) {
       ]),
     ),
   ]);
+
+  return typeDefinition;
+};
+
+const createGraphQLUnionType = object => {
+  const {info: {name}, exports} = object;
+  const {types} = exports.default;
+  const typeChecks = types.map(type => {
+    return t.ifStatement(
+      t.binaryExpression(
+        'instanceof',
+        t.identifier('value'),
+        t.identifier(type),
+      ),
+      t.blockStatement([t.returnStatement(t.identifier(type))]),
+    );
+  });
+  const typeDefinition = t.variableDeclaration('const', [
+    t.variableDeclarator(
+      t.identifier(name),
+      t.newExpression(t.identifier(gt.GraphQLUnionType), [
+        t.objectExpression([
+          t.objectProperty(
+            t.identifier('name'),
+            t.stringLiteral(capitalizeWord(name)),
+            false,
+            false,
+          ),
+          t.objectProperty(
+            t.identifier('types'),
+            t.arrayExpression([...types.map(type => t.identifier(type))]),
+          ),
+          t.objectMethod(
+            'method',
+            t.identifier('resolveType'),
+            [t.identifier('value')],
+            t.blockStatement(typeChecks),
+          ),
+        ]),
+      ]),
+    ),
+  ]);
+
+  return typeDefinition;
+};
+
+function convertToAST(object) {
+  const {id, info: {name}, exports, imports} = object;
+  const importStatements = createImportStatements(imports);
+  const type = exports.default.type;
+  let typeDefinition;
+
+  if (type === gt.GraphQLObjectType) {
+    typeDefinition = createGraphQLObjectType(object);
+  }
+
+  if (type === gt.GraphQLUnionType) {
+    typeDefinition = createGraphQLUnionType(object);
+  }
 
   const exportStatement = t.expressionStatement(
     t.assignmentExpression(
