@@ -77,16 +77,38 @@ const createModule = ({id, parent, imports, exports}) => ({
   },
 });
 
+const findFieldMatch = (node, parentModule) => {
+  const [field] = parentModule.exports.default.fields
+    .map((field, i) => ({field, index: i}))
+    .filter(({field}) => {
+      return areEqual(
+        {
+          name: field.name,
+          type: field.type,
+          fields: field.fields,
+        },
+        {
+          name: node.name,
+          type: node.type,
+          fields: node.fields,
+        },
+      );
+    });
+
+  return field;
+};
+
 function buildModuleGraph(input) {
   const root = inferType(input);
   const moduleMap = {};
   const nodeMap = new WeakMap();
   let _id = 0;
-  let parentNode;
+  // let parentNode;
 
   traverse(root, {
     [t.GraphQLObjectType](node, context) {
       const id = _id++;
+      const parentModule = nodeMap.get(context);
 
       // Start by grabbing our primitive GraphQL imports, like GraphQLString.
       const allGraphQLImports = node.fields
@@ -117,38 +139,34 @@ function buildModuleGraph(input) {
 
       nodeMap.set(node, moduleMap[id]);
 
-      const parentModule = nodeMap.get(parentNode);
-
       if (parentModule) {
-        const [field] = parentNode.fields
-          .map((field, i) => ({field, index: i}))
-          .filter(({field}) => areEqual(node, field));
+        const {field, index} = findFieldMatch(node, parentModule);
 
         parentModule.imports = addImport(parentModule.imports, moduleMap[id]);
 
-        parentNode.fields[field.index] = Object.assign({}, field.field, {
+        parentModule.exports.default.fields[index] = Object.assign({}, field, {
           type: moduleMap[id].info.name,
         });
       }
-
-      if (!areEqual(parentNode, context)) {
-        parentNode = context;
-      }
     },
     [t.GraphQLList](node, context) {
-      if (parentNode === undefined) {
+      const parentModule = nodeMap.get(context);
+
+      if (context === undefined) {
+        return;
+      }
+
+      if (parentModule === undefined) {
         return;
       }
 
       const {children} = node;
       const types = new Set(children.map(({type}) => type));
-      const [field] = parentNode.fields
-        .map((field, i) => ({field, index: i}))
-        .filter(({field}) => areEqual(node, field));
+      const {field, index} = findFieldMatch(node, parentModule);
 
       // Default to GraphQLString
       if (types.size === 0) {
-        parentNode.fields[field.index] = Object.assign({}, node, {
+        parentModule.exports.default.fields[index] = Object.assign({}, node, {
           ofType: t.GraphQLString,
         });
         return;
@@ -156,7 +174,7 @@ function buildModuleGraph(input) {
 
       // Homogenous
       if (types.size === 1) {
-        parentNode.fields[field.index] = Object.assign({}, node, {
+        parentModule.exports.default.fields[index] = Object.assign({}, node, {
           ofType: [...types][0],
         });
         return;
@@ -182,20 +200,15 @@ function buildModuleGraph(input) {
       nodeMap.set(node, moduleMap[id]);
 
       invariant(
-        parentNode.type === t.GraphQLObjectType,
+        parentModule.exports.default.type === t.GraphQLObjectType,
         'Expected the Parent Node type to always be a GraphQLObjectType',
       );
 
-      parentNode.fields[field.index] = Object.assign({}, node, {
+      parentModule.exports.default.fields[index] = Object.assign({}, node, {
         ofType: moduleMap[id],
       });
 
-      const parentModule = nodeMap.get(parentNode);
       parentModule.imports = addImport(parentModule.imports, moduleMap[id]);
-
-      if (!areEqual(parentNode, context)) {
-        parentNode = context;
-      }
     },
   });
 

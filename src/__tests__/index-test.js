@@ -34,7 +34,7 @@ describe('quickTypes', () => {
   });
 
   // fit('specific file', () => {
-  // const pair = pairedFiles['object-array-simple2'];
+  // const pair = pairedFiles['object-nested3'];
   // const input = fs.readFileSync(pair[0], 'utf8');
   // const output = fs.readFileSync(pair[1], 'utf8');
 

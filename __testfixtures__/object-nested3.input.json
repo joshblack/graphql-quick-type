@@ -1,0 +1,28 @@
+{
+  "a": {
+  "boolean": true,
+    "b": {
+      "string": "a",
+      "c": {
+        "integer": 1,
+        "d": {
+          "float": 3.14,
+          "e": {
+            "simpleList": [
+              1,
+              2,
+              3
+            ],
+            "f": {
+              "unionList": [
+                1,
+                "two",
+                true
+              ]
+            }
+          }
+        }
+      }
+    }
+  }
+}

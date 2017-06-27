@@ -1,0 +1,10 @@
+{
+  "id": "a",
+  "name": "Jane Doe",
+  "info": {
+    "email": "janedoe@test.net",
+    "account": {
+      "verified": true
+    }
+  }
+}
