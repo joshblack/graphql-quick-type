@@ -26,15 +26,13 @@ describe('quickTypes', () => {
     quickTypes = require('../');
   });
 
-  Object.keys(pairedFiles)
-    // .filter(key => key === 'inconceivable')
-    .forEach(key => {
-      const pair = pairedFiles[key];
-      const input = fs.readFileSync(pair[0], 'utf8');
-      const output = fs.readFileSync(pair[1], 'utf8');
+  Object.keys(pairedFiles).filter(key => key === 'iheanyi').forEach(key => {
+    const pair = pairedFiles[key];
+    const input = fs.readFileSync(pair[0], 'utf8');
+    const output = fs.readFileSync(pair[1], 'utf8');
 
-      it(`should convert ${path.basename(pair[0])}`, () => {
-        expect(quickTypes(JSON.parse(input))).toBe(output);
-      });
+    it(`should convert ${path.basename(pair[0])}`, () => {
+      expect(quickTypes(JSON.parse(input))).toBe(output);
     });
+  });
 });

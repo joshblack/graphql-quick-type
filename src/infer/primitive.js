@@ -19,6 +19,15 @@ function inferPrimitiveType(input) {
     return t.GraphQLBoolean;
   }
 
+  // Default to GraphQLString
+  if (input === null) {
+    return t.GraphQLString;
+  }
+
+  if (input === undefined) {
+    return t.GraphQLString;
+  }
+
   if (Array.isArray(input)) {
     return t.GraphQLList;
   }

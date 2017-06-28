@@ -1,8 +1,14 @@
 {
   "name": "graphql-quick-type",
   "version": "0.1.0",
-  "main": "index.js",
+  "author": "Josh Black <joshblack@us.ibm.com>",
   "license": "MIT",
+  "files": [
+    "src"
+  ],
+  "engines": {
+    "node": "^7.10.0"
+  },
   "scripts": {
     "commitmsg": "validate-commit-msg",
     "test": "jest",
