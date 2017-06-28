@@ -20,7 +20,7 @@ const createGraphQLObjectType = object => {
         t.identifier(field.exports.default.name),
         t.objectExpression([
           t.objectProperty(t.identifier('type'), t.identifier(field.name)),
-        ]),
+        ])
       );
     }
 
@@ -32,9 +32,9 @@ const createGraphQLObjectType = object => {
             t.identifier('type'),
             t.newExpression(t.identifier(gt.GraphQLList), [
               t.identifier(getListTypeFor(field)),
-            ]),
+            ])
           ),
-        ]),
+        ])
       );
     }
 
@@ -42,7 +42,7 @@ const createGraphQLObjectType = object => {
       t.identifier(field.name),
       t.objectExpression([
         t.objectProperty(t.identifier('type'), t.identifier(field.type)),
-      ]),
+      ])
     );
   });
 
@@ -55,14 +55,14 @@ const createGraphQLObjectType = object => {
             t.identifier('name'),
             t.stringLiteral(capitalizeWord(name)),
             false,
-            false,
+            false
           ),
           t.objectProperty(
             t.identifier('fields'),
-            t.arrowFunctionExpression([], t.objectExpression(fields)),
+            t.arrowFunctionExpression([], t.objectExpression(fields))
           ),
         ]),
-      ]),
+      ])
     ),
   ]);
 

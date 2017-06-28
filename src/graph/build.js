@@ -57,7 +57,7 @@ function build(input) {
                 name: node.name,
                 type: node.type,
                 fields: node.fields,
-              },
+              }
             );
           });
 
@@ -87,7 +87,7 @@ function build(input) {
                 {
                   type: node.type,
                   fields: node.fields,
-                },
+                }
               );
             });
 

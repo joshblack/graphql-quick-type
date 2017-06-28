@@ -12,13 +12,13 @@ const createGraphQLImportStatement = imports => {
         t.identifier(name),
         t.identifier(name),
         false,
-        true,
+        true
       );
     });
   return t.variableDeclaration('const', [
     t.variableDeclarator(
       t.objectPattern(importObjectPattern),
-      t.callExpression(t.identifier('require'), [t.stringLiteral('graphql')]),
+      t.callExpression(t.identifier('require'), [t.stringLiteral('graphql')])
     ),
   ]);
 };
@@ -29,7 +29,7 @@ const createCustomImportStatement = m => {
       t.identifier(m.info.name),
       t.callExpression(t.identifier('require'), [
         t.stringLiteral(`./${m.info.name}`),
-      ]),
+      ])
     ),
   ]);
 };

@@ -17,9 +17,9 @@ const createGraphQLUnionType = object => {
       t.binaryExpression(
         'instanceof',
         t.identifier('value'),
-        t.identifier(type),
+        t.identifier(type)
       ),
-      t.blockStatement([t.returnStatement(t.identifier(type))]),
+      t.blockStatement([t.returnStatement(t.identifier(type))])
     );
   });
   const typeDefinition = t.variableDeclaration('const', [
@@ -31,20 +31,20 @@ const createGraphQLUnionType = object => {
             t.identifier('name'),
             t.stringLiteral(capitalizeWord(name)),
             false,
-            false,
+            false
           ),
           t.objectProperty(
             t.identifier('types'),
-            t.arrayExpression([...types.map(type => t.identifier(type))]),
+            t.arrayExpression([...types.map(type => t.identifier(type))])
           ),
           t.objectMethod(
             'method',
             t.identifier('resolveType'),
             [t.identifier('value')],
-            t.blockStatement(typeChecks),
+            t.blockStatement(typeChecks)
           ),
         ]),
-      ]),
+      ])
     ),
   ]);
 

@@ -39,7 +39,7 @@ function decorate(modules) {
           }
 
           return child;
-        }),
+        })
       );
 
       // Default to GraphQLString

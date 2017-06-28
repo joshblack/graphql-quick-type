@@ -25,12 +25,12 @@ function convertToAST(object) {
     t.assignmentExpression(
       '=',
       t.memberExpression(t.identifier('module'), t.identifier('exports')),
-      t.identifier(name),
-    ),
+      t.identifier(name)
+    )
   );
 
   return t.file(
-    t.program([...importStatements, typeDefinition, exportStatement]),
+    t.program([...importStatements, typeDefinition, exportStatement])
   );
 }
 
