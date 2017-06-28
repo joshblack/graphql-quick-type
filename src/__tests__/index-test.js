@@ -27,7 +27,7 @@ describe('quickTypes', () => {
   });
 
   Object.keys(pairedFiles)
-    // .filter((key) => key === 'object-array-simple2')
+    .filter(key => key === 'inconceivable')
     .forEach(key => {
       const pair = pairedFiles[key];
       const input = fs.readFileSync(pair[0], 'utf8');
@@ -37,14 +37,4 @@ describe('quickTypes', () => {
         expect(quickTypes(JSON.parse(input))).toBe(output);
       });
     });
-
-  // fit('specific file', () => {
-  // const pair = pairedFiles['object-array-simple2'];
-  // const input = fs.readFileSync(pair[0], 'utf8');
-  // const output = fs.readFileSync(pair[1], 'utf8');
-
-  // quickTypes = require('../');
-
-  // quickTypes(JSON.parse(input));
-  // });
 });

@@ -101,7 +101,7 @@ function quickTypes(input) {
   const modules = enhanceModules(buildModuleGraph(input));
   const files = modules.map(convertToAST).map(print);
 
-  // console.log(JSON.stringify(modules, null, 2));
+  // console.log(files.join('\n'));
   return files.join('\n');
 }
 
