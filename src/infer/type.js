@@ -1,8 +1,8 @@
 'use strict';
 
 const areEqual = require('fbjs/lib/areEqual');
-const {types: t} = require('./types');
-const inferPrimitiveType = require('./inferPrimitiveType');
+const {types: t} = require('../types');
+const inferPrimitiveType = require('./primitive');
 
 function inferType(input) {
   if (Array.isArray(input)) {

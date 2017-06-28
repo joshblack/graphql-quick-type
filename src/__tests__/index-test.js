@@ -27,7 +27,7 @@ describe('quickTypes', () => {
   });
 
   Object.keys(pairedFiles)
-    .filter(key => key === 'inconceivable')
+    // .filter(key => key === 'inconceivable')
     .forEach(key => {
       const pair = pairedFiles[key];
       const input = fs.readFileSync(pair[0], 'utf8');

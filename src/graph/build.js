@@ -3,9 +3,9 @@
 const invariant = require('fbjs/lib/invariant');
 const areEqual = require('fbjs/lib/areEqual');
 const prettyFormat = require('pretty-format');
-const traverse = require('./traverse');
-const inferType = require('./inferType');
-const {types: t, isPrimitiveType} = require('./types');
+const traverse = require('../traverse');
+const inferType = require('../infer/type');
+const {types: t, isPrimitiveType} = require('../types');
 const createModule = require('./utilities/createModule');
 const {addImport} = require('./utilities/addImports');
 
@@ -30,7 +30,7 @@ const findFieldMatch = (node, parentModule) => {
   return field;
 };
 
-function buildModuleGraph(input) {
+function build(input) {
   const root = inferType(input);
   const moduleMap = {};
   const nodeMap = new WeakMap();
@@ -175,4 +175,4 @@ function buildModuleGraph(input) {
   return Object.keys(moduleMap).map(key => moduleMap[key]);
 }
 
-module.exports = buildModuleGraph;
+module.exports = build;

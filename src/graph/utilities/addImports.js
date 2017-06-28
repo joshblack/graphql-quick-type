@@ -1,6 +1,6 @@
 'use strict';
 
-const {types: t} = require('../types');
+const {types: t} = require('../../types');
 
 const addImport = (imports, module) => {
   for (let i = 0; i < imports.length; i++) {
