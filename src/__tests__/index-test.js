@@ -21,20 +21,25 @@ const pairedFiles = files.reduce((acc, file) => {
 describe('quickTypes', () => {
   let quickTypes;
 
-  Object.keys(pairedFiles).forEach(key => {
-    const pair = pairedFiles[key];
-    const input = fs.readFileSync(pair[0], 'utf8');
-    const output = fs.readFileSync(pair[1], 'utf8');
-
+  beforeEach(() => {
+    jest.resetModuleRegistry();
     quickTypes = require('../');
-
-    it(`should convert ${path.basename(pair[0])}`, () => {
-      expect(quickTypes(JSON.parse(input))).toBe(output);
-    });
   });
 
+  Object.keys(pairedFiles)
+    // .filter((key) => key === 'object-array-simple2')
+    .forEach(key => {
+      const pair = pairedFiles[key];
+      const input = fs.readFileSync(pair[0], 'utf8');
+      const output = fs.readFileSync(pair[1], 'utf8');
+
+      it(`should convert ${path.basename(pair[0])}`, () => {
+        expect(quickTypes(JSON.parse(input))).toBe(output);
+      });
+    });
+
   // fit('specific file', () => {
-  // const pair = pairedFiles['object-nested3'];
+  // const pair = pairedFiles['object-array-simple2'];
   // const input = fs.readFileSync(pair[0], 'utf8');
   // const output = fs.readFileSync(pair[1], 'utf8');
 

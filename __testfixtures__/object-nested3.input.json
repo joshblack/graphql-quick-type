@@ -1,6 +1,6 @@
 {
   "a": {
-  "boolean": true,
+    "boolean": true,
     "b": {
       "string": "a",
       "c": {

@@ -2,32 +2,28 @@
 
 const {types: t} = require('./types');
 
-// Traverse through each field in our overall Object Type
-module.exports = () => {
-  let _id = 0;
-  return function traverse(tree, parentId) {
-    const visited = [];
-    const id = _id++;
-    const node = {
-      id,
-      parentId,
-      tree,
-    };
-
-    visited.push(node);
-
-    if (tree.type === t.GraphQLObjectType) {
-      tree.fields.forEach(field => {
-        visited.push(...traverse(field, id));
-      });
-    }
-
-    if (tree.type === t.GraphQLList) {
-      tree.children.forEach(child => {
-        visited.push(...traverse(child, id));
-      });
-    }
-
-    return visited;
+function traverse(node, visitor, context) {
+  const {children, type, fields} = node;
+  const currentContext = {
+    node,
+    parent: context,
   };
-};
+
+  if (visitor[type]) {
+    visitor[type](node, currentContext);
+  }
+
+  if (type === t.GraphQLObjectType) {
+    fields.forEach(field => {
+      traverse(field, visitor, currentContext);
+    });
+  }
+
+  if (type === t.GraphQLList) {
+    children.forEach(child => {
+      traverse(child, visitor, currentContext);
+    });
+  }
+}
+
+module.exports = traverse;

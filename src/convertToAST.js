@@ -7,7 +7,6 @@ const generate = require('babel-generator').default;
 const capitalizeWord = word => {
   return word[0].toUpperCase() + word.slice(1);
 };
-
 const createGraphQLImportStatement = imports => {
   const importObjectPattern = imports
     .sort((a, b) => {
@@ -116,7 +115,12 @@ const createGraphQLObjectType = object => {
 
 const createGraphQLUnionType = object => {
   const {info: {name}, exports} = object;
-  const {types} = exports.default;
+  const types = exports.default.types.map(type => {
+    if (typeof type === 'string') {
+      return type;
+    }
+    return type.info.name;
+  });
   const typeChecks = types.map(type => {
     return t.ifStatement(
       t.binaryExpression(
