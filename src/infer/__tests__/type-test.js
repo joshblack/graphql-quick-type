@@ -1,6 +1,6 @@
 'use strict';
 
-const inferType = require('../inferType');
+const inferType = require('../type');
 
 describe('inferType', () => {
   it('should infer the types in a simple object', () => {

@@ -1,6 +1,6 @@
 'use strict';
 
-const inferPrimitiveType = require('../inferPrimitiveType');
+const inferPrimitiveType = require('../primitive');
 
 describe('inferPrimitiveType', () => {
   it('should parse a string', () => {

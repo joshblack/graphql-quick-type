@@ -5,6 +5,13 @@ const {types: t} = require('../types');
 const createModule = require('./utilities/createModule');
 const {addImport, addGraphQLImport} = require('./utilities/addImports');
 
+/**
+ * After building up our initial Module Graph, the next step is to visit a
+ * specific subset of fields and add information to them.
+ *
+ * In this case, we're just working with GraphQLList types and trying to figure
+ * out if the list is all the same type, or is a union of different types.
+ */
 function decorate(modules) {
   const moduleMap = cloneDeep(modules).reduce((acc, m) => {
     return Object.assign({}, acc, {
@@ -49,11 +56,12 @@ function decorate(modules) {
         const type = [...types][0];
         m.imports = addImport(m.imports, type);
         m.exports.default.fields[index] = Object.assign({}, list, {
-          ofType: [...types][0],
+          ofType: type,
         });
         return;
       }
 
+      // Union Type
       const imports = [...types].map(type => {
         // GraphQL Import
         if (typeof type === 'string') {
@@ -67,7 +75,6 @@ function decorate(modules) {
         return type;
       });
 
-      // Union Type
       const unionModule = createModule({
         imports: imports.concat({
           name: 'GraphQLUnionType',

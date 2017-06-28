@@ -2,7 +2,7 @@
 
 const {types: t} = require('../types');
 const traverse = require('../traverse');
-const inferType = require('../inferType');
+const inferType = require('../infer/type');
 
 const complexObject = {
   id: 'a',

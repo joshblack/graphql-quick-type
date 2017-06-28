@@ -1,44 +1,19 @@
 'use strict';
 
-const invariant = require('fbjs/lib/invariant');
 const areEqual = require('fbjs/lib/areEqual');
-const prettyFormat = require('pretty-format');
 const traverse = require('../traverse');
 const inferType = require('../infer/type');
 const {types: t, isPrimitiveType} = require('../types');
 const createModule = require('./utilities/createModule');
 const {addImport} = require('./utilities/addImports');
 
-const findFieldMatch = (node, parentModule) => {
-  const [field] = parentModule.exports.default.fields
-    .map((field, i) => ({field, index: i}))
-    .filter(({field}) => {
-      return areEqual(
-        {
-          name: field.name,
-          type: field.type,
-          fields: field.fields,
-        },
-        {
-          name: node.name,
-          type: node.type,
-          fields: node.fields,
-        },
-      );
-    });
-
-  return field;
-};
-
 function build(input) {
   const root = inferType(input);
   const moduleMap = {};
   const nodeMap = new WeakMap();
-  // let _id = 0;
 
   traverse(root, {
     [t.GraphQLObjectType](node, context) {
-      // const id = _id++;
       const parentModule = nodeMap.get(context.parent && context.parent.node);
 
       // Start by grabbing our primitive GraphQL imports, like GraphQLString.
@@ -66,15 +41,31 @@ function build(input) {
         },
       });
       moduleMap[newModule.id] = newModule;
-
       nodeMap.set(node, newModule);
 
       if (parentModule) {
-        const {field, index} = findFieldMatch(node, parentModule);
+        const [field] = parentModule.exports.default.fields
+          .map((field, i) => ({field, index: i}))
+          .filter(({field}) => {
+            return areEqual(
+              {
+                name: field.name,
+                type: field.type,
+                fields: field.fields,
+              },
+              {
+                name: node.name,
+                type: node.type,
+                fields: node.fields,
+              },
+            );
+          });
 
         parentModule.imports = addImport(parentModule.imports, newModule);
 
-        parentModule.exports.default.fields[index] = Object.assign({}, field, {
+        parentModule.exports.default.fields[
+          field.index
+        ] = Object.assign({}, field.field, {
           type: newModule.info.name,
         });
       }
@@ -104,72 +95,6 @@ function build(input) {
         }
       }
     },
-    // [t.GraphQLList](node, context) {
-    // const parentModule = nodeMap.get(
-    // context.parent && context.parent.node
-    // );
-
-    // // Let's double-check to see if the context or parentModule is undefined.
-    // // If this is the case, then we _think_ that we're dealing with a JSON
-    // // response that has an array at the top level, e.g. [{ foo: 'bar' }]
-    // if (context === undefined) {
-    // return;
-    // }
-
-    // if (parentModule === undefined) {
-    // return;
-    // }
-
-    // const {children} = node;
-    // const types = new Set(children.map(({type}) => type));
-    // const {field, index} = findFieldMatch(node, parentModule);
-
-    // // Default to GraphQLString
-    // if (types.size === 0) {
-    // parentModule.exports.default.fields[index] = Object.assign({}, node, {
-    // ofType: t.GraphQLString,
-    // });
-    // return;
-    // }
-
-    // // Homogenous
-    // if (types.size === 1) {
-    // parentModule.exports.default.fields[index] = Object.assign({}, node, {
-    // ofType: [...types][0],
-    // });
-    // return;
-    // }
-
-    // // Union Type
-    // const id = _id++;
-    // moduleMap[id] = createModule({
-    // id,
-    // // parent: parentNode,
-    // imports: [...types, 'GraphQLUnionType'].map(name => ({
-    // name,
-    // source: 'graphql',
-    // })),
-    // exports: {
-    // default: {
-    // type: t.GraphQLUnionType,
-    // types: [...types],
-    // },
-    // },
-    // });
-
-    // nodeMap.set(node, moduleMap[id]);
-
-    // invariant(
-    // parentModule.exports.default.type === t.GraphQLObjectType,
-    // 'Expected the Parent Node type to always be a GraphQLObjectType',
-    // );
-
-    // parentModule.exports.default.fields[index] = Object.assign({}, node, {
-    // ofType: moduleMap[id],
-    // });
-
-    // parentModule.imports = addImport(parentModule.imports, moduleMap[id]);
-    // },
   });
 
   return Object.keys(moduleMap).map(key => moduleMap[key]);
