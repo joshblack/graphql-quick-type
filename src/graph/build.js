@@ -14,7 +14,45 @@ function build(input) {
 
   traverse(root, {
     [t.GraphQLObjectType](node, context) {
-      const parentModule = nodeMap.get(context.parent && context.parent.node);
+      // Specific case where we have a GraphQLList as the root node
+      // if (context.parent && context.parent.node.type === t.GraphQLList) {
+      // if (context.parent.parent === undefined) {
+      // console.log('hi');
+      // console.log(node);
+      // const {type, children, name} = context.parent.node;
+      // // console.log(children);
+      // const [child] = children
+      // .map((child, i) => ({
+      // child,
+      // index: i,
+      // }))
+      // .filter(({child}) => {
+      // if (child.id === undefined) {
+      // return false;
+      // }
+      // console.log(child.exports.default);
+      // console.log(node);
+      // console.log('---------------');
+      // // return areEqual(
+      // // {
+      // // type: child.exports.default.type,
+      // // fields: child.exports.default.fields,
+      // // },
+      // // {
+      // // type: node.type,
+      // // fields: node.fields,
+      // // }
+      // // );
+      // });
+
+      // console.log('-------------------');
+      // if (child !== undefined) {
+      // return;
+      // }
+      // }
+      // }
+
+      const parentModule = context.parent && nodeMap.get(context.parent.node);
 
       // Start by grabbing our primitive GraphQL imports, like GraphQLString.
       const allGraphQLImports = node.fields
@@ -91,9 +129,24 @@ function build(input) {
               );
             });
 
-          children[child.index] = newModule;
+          if (child !== undefined && child.index !== undefined) {
+            children[child.index] = newModule;
+          }
         }
       }
+    },
+    [t.GraphQLList](node, context) {
+      // Dedupe any items in the list
+      const dedupedChildren = node.children.reduce((acc, child) => {
+        const match = acc.filter(m => areEqual(m, child));
+        if (match.length === 0) {
+          return acc.concat(child);
+        }
+
+        return acc;
+      }, []);
+
+      node.children = dedupedChildren;
     },
   });
 

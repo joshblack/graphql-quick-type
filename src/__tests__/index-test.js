@@ -27,7 +27,7 @@ describe('quickTypes', () => {
   });
 
   Object.keys(pairedFiles)
-    // .filter(key => key === 'iheanyi')
+    // .filter(key => key === 'list-simple3')
     .forEach(key => {
       const pair = pairedFiles[key];
       const input = fs.readFileSync(pair[0], 'utf8');

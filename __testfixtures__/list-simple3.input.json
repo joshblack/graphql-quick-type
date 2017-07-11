@@ -1,0 +1,16 @@
+[
+  {
+    "id": "a",
+    "name": "foo",
+    "nested": {
+      "value": 0
+    }
+  },
+  {
+    "id": "b",
+    "name": "bar",
+    "nested": {
+      "value": 0
+    }
+  }
+]
