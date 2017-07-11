@@ -14,44 +14,6 @@ function build(input) {
 
   traverse(root, {
     [t.GraphQLObjectType](node, context) {
-      // Specific case where we have a GraphQLList as the root node
-      // if (context.parent && context.parent.node.type === t.GraphQLList) {
-      // if (context.parent.parent === undefined) {
-      // console.log('hi');
-      // console.log(node);
-      // const {type, children, name} = context.parent.node;
-      // // console.log(children);
-      // const [child] = children
-      // .map((child, i) => ({
-      // child,
-      // index: i,
-      // }))
-      // .filter(({child}) => {
-      // if (child.id === undefined) {
-      // return false;
-      // }
-      // console.log(child.exports.default);
-      // console.log(node);
-      // console.log('---------------');
-      // // return areEqual(
-      // // {
-      // // type: child.exports.default.type,
-      // // fields: child.exports.default.fields,
-      // // },
-      // // {
-      // // type: node.type,
-      // // fields: node.fields,
-      // // }
-      // // );
-      // });
-
-      // console.log('-------------------');
-      // if (child !== undefined) {
-      // return;
-      // }
-      // }
-      // }
-
       const parentModule = context.parent && nodeMap.get(context.parent.node);
 
       // Start by grabbing our primitive GraphQL imports, like GraphQLString.
