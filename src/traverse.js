@@ -11,10 +11,6 @@ function traverse(node, visitor, context) {
 
   if (visitor[type]) {
     visitor[type](node, currentContext);
-    // const value = visitor[type](node, currentContext);
-    // if (value !== undefined) {
-    // currentContext.node = value;
-    // }
   }
 
   if (type === t.GraphQLObjectType) {
